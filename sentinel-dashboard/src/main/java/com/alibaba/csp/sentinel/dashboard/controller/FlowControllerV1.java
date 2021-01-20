@@ -22,8 +22,8 @@ import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.discovery.MachineInfo;
 import com.alibaba.csp.sentinel.dashboard.domain.Result;
 import com.alibaba.csp.sentinel.dashboard.repository.rule.InMemoryRuleRepositoryAdapter;
-import com.alibaba.csp.sentinel.dashboard.rule.nacos.FlowRuleNacosProvider;
-import com.alibaba.csp.sentinel.dashboard.rule.nacos.FlowRuleNacosPublisher;
+import com.alibaba.csp.sentinel.dashboard.rule.nacos.flow.FlowRuleNacosProvider;
+import com.alibaba.csp.sentinel.dashboard.rule.nacos.flow.FlowRuleNacosPublisher;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Flow rule controller.
@@ -54,10 +52,10 @@ public class FlowControllerV1 {
     @Autowired
     private SentinelApiClient sentinelApiClient;
     @Autowired
-    private FlowRuleNacosPublisher flowRuleNacosPublisher;
+    private FlowRuleNacosPublisher publisher;
 
     @Autowired
-    private FlowRuleNacosProvider flowRuleNacosProvider;
+    private FlowRuleNacosProvider provider;
 
     @GetMapping("/rules")
     @AuthAction(PrivilegeType.READ_RULE)
@@ -76,7 +74,7 @@ public class FlowControllerV1 {
         }
         try {
 //            List<FlowRuleEntity> rules = sentinelApiClient.fetchFlowRuleOfMachine(app, ip, port);
-            List<FlowRuleEntity> rules = flowRuleNacosProvider.getRules(app);
+            List<FlowRuleEntity> rules = provider.getRules(app);
             rules = repository.saveAll(rules);
             return Result.ofSuccess(rules);
         } catch (Throwable throwable) {
@@ -278,7 +276,7 @@ public class FlowControllerV1 {
 
     private void publishRules(String app, String ip, Integer port) throws Exception {
         List<FlowRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
-        flowRuleNacosPublisher.publish(app, rules);
+        publisher.publish(app, rules);
 
     }
 }
