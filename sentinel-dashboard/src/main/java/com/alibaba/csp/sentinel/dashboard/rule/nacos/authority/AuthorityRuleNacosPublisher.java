@@ -44,7 +44,7 @@ public class AuthorityRuleNacosPublisher implements DynamicRulePublisher<List<Au
         if (rules == null) {
             return;
         }
-        configService.publishConfig(app + NacosConfigUtil.DEGRADE_DATA_ID_POSTFIX,
+        configService.publishConfig(app + NacosConfigUtil.AUTHORITY_DATA_ID_POSTFIX,
                 NacosConfigUtil.GROUP_ID, converter.convert(rules));
     }
 }

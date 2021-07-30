@@ -15,7 +15,7 @@
  */
 package com.alibaba.csp.sentinel.dashboard.rule.nacos.param;
 
-import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.DegradeRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.ParamFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.dashboard.rule.nacos.NacosConfigUtil;
 import com.alibaba.csp.sentinel.datasource.Converter;
@@ -31,15 +31,15 @@ import java.util.List;
  * @since 1.4.0
  */
 @Component("paramFlowRuleNacosPublisher")
-public class ParamFlowRuleNacosPublisher implements DynamicRulePublisher<List<DegradeRuleEntity>> {
+public class ParamFlowRuleNacosPublisher implements DynamicRulePublisher<List<ParamFlowRuleEntity>> {
 
     @Autowired
     private ConfigService configService;
     @Autowired
-    private Converter<List<DegradeRuleEntity>, String> converter;
+    private Converter<List<ParamFlowRuleEntity>, String> converter;
 
     @Override
-    public void publish(String app, List<DegradeRuleEntity> rules) throws Exception {
+    public void publish(String app, List<ParamFlowRuleEntity> rules) throws Exception {
         AssertUtil.notEmpty(app, "app name cannot be empty");
         if (rules == null) {
             return;
